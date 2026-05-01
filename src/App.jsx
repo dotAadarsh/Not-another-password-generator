@@ -112,12 +112,12 @@ async function buildPassword(hashBytes, length) {
   return chars.join("");
 }
 
-// ============================================================
+// ===========================================================
 // CRACK TIME ESTIMATOR
 // Assumes a fast offline attacker: 100 billion guesses/sec
 // (modern GPU cluster cracking bcrypt is ~10B/s; we use 1e11
 //  for a conservative worst-case scenario against raw hashes)
-// ============================================================
+// ===========================================================
 function estimateCrackTime(password) {
   if (!password) return null;
 
