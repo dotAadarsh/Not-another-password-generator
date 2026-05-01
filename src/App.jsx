@@ -191,6 +191,39 @@ export default function EntropyForge() {
   const [showSources, setShowSources] = useState(false);
   const [popoverPos, setPopoverPos] = useState(null);
 
+  const [burnTimer, setBurnTimer] = useState(null);
+  const burnIntervalRef = useRef(null);
+
+  // ── Burn-after-reading countdown ──────────────────────────
+  const startBurnTimer = useCallback(() => {
+    clearInterval(burnIntervalRef.current);
+    setBurnTimer(30);
+    burnIntervalRef.current = setInterval(() => {
+      setBurnTimer(prev => {
+        if (prev <= 1) {
+          clearInterval(burnIntervalRef.current);
+          setPassword("");
+          setShowPassword(false);
+          setCopied(false);
+          return null;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, []);
+
+  const cancelBurn = useCallback(() => {
+    clearInterval(burnIntervalRef.current);
+    setBurnTimer(null);
+  }, []);
+
+  // Cleanup burn timer on unmount
+  useEffect(() => () => clearInterval(burnIntervalRef.current), []);
+
+  const mouseBufferRef = useRef([]);
+  const activityTimerRef = useRef(null);
+  const sourcesCardRef = useRef(null);
+
   const handleSourcesEnter = () => {
     if (!sourceCount || !sourcesCardRef.current) return;
     const rect = sourcesCardRef.current.getBoundingClientRect();
@@ -198,12 +231,9 @@ export default function EntropyForge() {
     setShowSources(true);
   };
 
-  const mouseBufferRef = useRef([]);
-  const activityTimerRef = useRef(null);
-  const sourcesCardRef = useRef(null);
-
-  // Inject matching favicon
+  // Inject matching favicon and set tab title
   useEffect(() => {
+    document.title = "Not Another Password Generator";
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44">
       <polygon points="22,3 40,12 40,32 22,41 4,32 4,12" fill="%237c3aed22" stroke="%237c3aed" stroke-width="2"/>
       <polygon points="22,10 34,17 34,27 22,34 10,27 10,17" fill="%237c3aed33" stroke="%23a855f7" stroke-width="1"/>
@@ -243,7 +273,10 @@ export default function EntropyForge() {
     setGenerating(true);
     setGlitching(true);
     setCopied(false);
+    cancelBurn();
+    setBurnTimer(null);
 
+    // Start generation
     setTimeout(() => setGlitching(false), 600);
 
     try {
@@ -254,6 +287,7 @@ export default function EntropyForge() {
       const hashBytes = await hashEntropy(sources);
       const pw = await buildPassword(hashBytes, length);
       setPassword(pw);
+      setShowPassword(false);
     } catch (err) {
       setPassword("ERROR: " + err.message);
     } finally {
@@ -264,11 +298,10 @@ export default function EntropyForge() {
   const copyToClipboard = () => {
     if (!password || password === placeholder) return;
     const text = password;
-    // Try modern clipboard API first, fall back to execCommand
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(() => {
         setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        startBurnTimer();
       }).catch(() => execCommandCopy(text));
     } else {
       execCommandCopy(text);
@@ -286,7 +319,7 @@ export default function EntropyForge() {
     try {
       document.execCommand("copy");
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      startBurnTimer();
     } catch {}
     document.body.removeChild(el);
   };
@@ -521,7 +554,7 @@ export default function EntropyForge() {
       }}>
         {/* GitHub link */}
         <a
-          href="https://github.com/dotAadarsh"
+          href="https://github.com/dotAadarsh/Not-another-password-generator.git"
           target="_blank"
           rel="noopener noreferrer"
           style={{
@@ -927,6 +960,48 @@ export default function EntropyForge() {
                     {copied ? "✓ Copied" : "⎘ Copy"}
                   </button>
                 </div>
+
+                {/* ── Burn-after-reading countdown ── */}
+                {burnTimer !== null && (
+                  <div style={{ marginTop: 14 }}>
+                    {/* Label row */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                      <span style={{ fontSize: "0.58rem", color: "#ef4444", letterSpacing: "0.12em", display: "flex", alignItems: "center", gap: 5 }}>
+                        🔥 BURN AFTER READING
+                        <span style={{ color: textMuted }}>— clears in</span>
+                        <span style={{ fontWeight: 700, color: burnTimer <= 5 ? "#ef4444" : burnTimer <= 10 ? "#f97316" : "#eab308", fontSize: "0.65rem" }}>
+                          {burnTimer}s
+                        </span>
+                      </span>
+                      <button
+                        onClick={cancelBurn}
+                        style={{
+                          background: "none", border: `1px solid ${border}`, borderRadius: 4,
+                          color: textMuted, fontSize: "0.55rem", padding: "2px 7px",
+                          cursor: "pointer", letterSpacing: "0.06em",
+                        }}
+                      >
+                        cancel
+                      </button>
+                    </div>
+
+                    {/* Progress bar — drains left to right */}
+                    <div style={{ height: 4, background: dark ? "#1e1e2e" : "#e8e8f0", borderRadius: 2, overflow: "hidden" }}>
+                      <div style={{
+                        height: "100%",
+                        width: `${(burnTimer / 30) * 100}%`,
+                        borderRadius: 2,
+                        transition: "width 1s linear, background 1s",
+                        background: burnTimer <= 5
+                          ? "#ef4444"
+                          : burnTimer <= 10
+                          ? "linear-gradient(90deg, #ef4444, #f97316)"
+                          : "linear-gradient(90deg, #f97316, #eab308)",
+                        boxShadow: burnTimer <= 5 ? "0 0 8px #ef444488" : "none",
+                      }} />
+                    </div>
+                  </div>
+                )}
               </>
             );
           })()}
@@ -1011,9 +1086,7 @@ export default function EntropyForge() {
             padding: "18px 32px",
             borderRadius: 12,
             fontSize: "1.05rem",
-            boxShadow: generating
-              ? "none"
-              : `0 4px 24px ${accent}66, 0 0 0 0 ${accent}`,
+            boxShadow: generating ? "none" : `0 4px 24px ${accent}66, 0 0 0 0 ${accent}`,
             animation: !generating ? "pulse-ring 2.5s ease infinite" : "none",
             animationDelay: "0.3s",
           }}
