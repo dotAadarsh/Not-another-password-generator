@@ -112,12 +112,12 @@ async function buildPassword(hashBytes, length) {
   return chars.join("");
 }
 
-// ===========================================================
+// ============================================================
 // CRACK TIME ESTIMATOR
 // Assumes a fast offline attacker: 100 billion guesses/sec
 // (modern GPU cluster cracking bcrypt is ~10B/s; we use 1e11
 //  for a conservative worst-case scenario against raw hashes)
-// ===========================================================
+// ============================================================
 function estimateCrackTime(password) {
   if (!password) return null;
 
@@ -543,46 +543,86 @@ export default function EntropyForge() {
         }
       `}</style>
 
-      {/* Top bar */}
+      {/* ── Top bar: GitHub | Logo + Title | Toggle ── */}
       <header style={{
         width: "100%",
         maxWidth: 780,
-        display: "flex",
-        justifyContent: "space-between",
+        display: "grid",
+        gridTemplateColumns: "1fr auto 1fr",
         alignItems: "center",
-        padding: "20px 20px 0",
+        padding: "24px 20px 0",
+        gap: 12,
       }}>
-        {/* GitHub link */}
-        <a
-          href="https://github.com/dotAadarsh"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 7,
-            color: textMuted,
-            textDecoration: "none",
-            fontSize: "0.72rem",
-            fontWeight: 600,
-            letterSpacing: "0.06em",
-            transition: "color 0.2s",
-            padding: "6px 10px",
-            borderRadius: 8,
-            border: `1px solid ${border}`,
-            background: dark ? "#12121a" : "#ffffff",
-          }}
-          onMouseEnter={e => { e.currentTarget.style.color = text; e.currentTarget.style.borderColor = accent; }}
-          onMouseLeave={e => { e.currentTarget.style.color = textMuted; e.currentTarget.style.borderColor = border; }}
-        >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/>
-          </svg>
-          GitHub
-        </a>
+        {/* Left — GitHub */}
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <a
+            href="https://github.com/dotAadarsh"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 7,
+              color: textMuted,
+              textDecoration: "none",
+              fontSize: "0.72rem",
+              fontWeight: 600,
+              letterSpacing: "0.06em",
+              padding: "6px 12px",
+              borderRadius: 8,
+              border: `1px solid ${border}`,
+              background: dark ? "#12121a" : "#ffffff",
+              transition: "color 0.2s, border-color 0.2s",
+            }}
+            onMouseEnter={e => { e.currentTarget.style.color = text; e.currentTarget.style.borderColor = accent; }}
+            onMouseLeave={e => { e.currentTarget.style.color = textMuted; e.currentTarget.style.borderColor = border; }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/>
+            </svg>
+            GitHub
+          </a>
+        </div>
 
-        {/* Dark mode toggle */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        {/* Center — Logo mark + app name */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+          <svg width="40" height="40" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="22,3 40,12 40,32 22,41 4,32 4,12" fill="#7c3aed22" stroke="#7c3aed" strokeWidth="2"/>
+            <polygon points="22,10 34,17 34,27 22,34 10,27 10,17" fill="#7c3aed33" stroke="#a855f7" strokeWidth="1"/>
+            <circle cx="22" cy="22" r="5" fill="#7c3aed"/>
+            <line x1="22" y1="3" x2="22" y2="17" stroke="#a855f7" strokeWidth="1.2" strokeDasharray="2 2"/>
+            <line x1="22" y1="27" x2="22" y2="41" stroke="#a855f7" strokeWidth="1.2" strokeDasharray="2 2"/>
+            <line x1="4" y1="12" x2="17" y2="19" stroke="#a855f7" strokeWidth="1.2" strokeDasharray="2 2"/>
+            <line x1="27" y1="25" x2="40" y2="32" stroke="#a855f7" strokeWidth="1.2" strokeDasharray="2 2"/>
+            <line x1="40" y1="12" x2="27" y2="19" stroke="#a855f7" strokeWidth="1.2" strokeDasharray="2 2"/>
+            <line x1="17" y1="25" x2="4" y2="32" stroke="#a855f7" strokeWidth="1.2" strokeDasharray="2 2"/>
+          </svg>
+          <div style={{ textAlign: "center" }}>
+            <h1
+              className="entropy-forge-title"
+              style={{
+                fontSize: "clamp(1rem, 3.5vw, 1.5rem)",
+                color: text,
+                lineHeight: 1.1,
+                letterSpacing: "-0.5px",
+              }}
+            >
+              NOT ANOTHER <span style={{ color: accent }}>PASSWORD</span> GENERATOR
+            </h1>
+            <p style={{
+              color: textMuted,
+              marginTop: 5,
+              fontSize: "0.62rem",
+              letterSpacing: "0.15em",
+              textTransform: "uppercase",
+            }}>
+              Multi-source chaos → cryptographic password
+            </p>
+          </div>
+        </div>
+
+        {/* Right — Theme toggle */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 8 }}>
           <span style={{ fontSize: "0.75rem", color: textMuted }}>☀</span>
           <div
             className="toggle-track"
@@ -594,43 +634,6 @@ export default function EntropyForge() {
           <span style={{ fontSize: "0.75rem", color: textMuted }}>☾</span>
         </div>
       </header>
-
-      {/* Hero title */}
-      <div style={{ textAlign: "center", padding: "32px 24px 0" }}>
-        {/* Hexagon favicon mark — inline above title */}
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>
-          <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <polygon points="22,3 40,12 40,32 22,41 4,32 4,12" fill="#7c3aed22" stroke="#7c3aed" strokeWidth="2"/>
-            <polygon points="22,10 34,17 34,27 22,34 10,27 10,17" fill="#7c3aed33" stroke="#a855f7" strokeWidth="1"/>
-            <circle cx="22" cy="22" r="5" fill="#7c3aed"/>
-            <line x1="22" y1="3" x2="22" y2="17" stroke="#a855f7" strokeWidth="1.2" strokeDasharray="2 2"/>
-            <line x1="22" y1="27" x2="22" y2="41" stroke="#a855f7" strokeWidth="1.2" strokeDasharray="2 2"/>
-            <line x1="4" y1="12" x2="17" y2="19" stroke="#a855f7" strokeWidth="1.2" strokeDasharray="2 2"/>
-            <line x1="27" y1="25" x2="40" y2="32" stroke="#a855f7" strokeWidth="1.2" strokeDasharray="2 2"/>
-            <line x1="40" y1="12" x2="27" y2="19" stroke="#a855f7" strokeWidth="1.2" strokeDasharray="2 2"/>
-            <line x1="17" y1="25" x2="4" y2="32" stroke="#a855f7" strokeWidth="1.2" strokeDasharray="2 2"/>
-          </svg>
-        </div>
-        <h1
-          className="entropy-forge-title"
-          style={{
-            fontSize: "clamp(1.6rem, 5.5vw, 3rem)",
-            color: text,
-            lineHeight: 1,
-          }}
-        >
-          NOT ANOTHER <span style={{ color: accent }}>PASSWORD</span> GENERATOR
-        </h1>
-        <p style={{
-          color: textMuted,
-          marginTop: 10,
-          fontSize: "0.82rem",
-          letterSpacing: "0.15em",
-          textTransform: "uppercase",
-        }}>
-          Multi-source chaos → cryptographic password
-        </p>
-      </div>
 
       {/* Main card */}
       <main style={{
