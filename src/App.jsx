@@ -554,7 +554,7 @@ export default function EntropyForge() {
       }}>
         {/* GitHub link */}
         <a
-          href="https://github.com/dotAadarsh/Not-another-password-generator.git"
+          href="https://github.com/dotAadarsh"
           target="_blank"
           rel="noopener noreferrer"
           style={{
@@ -1100,7 +1100,7 @@ export default function EntropyForge() {
         </button>
 
         {/* Footer note */}
-        <div style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: 8, paddingBottom: 8 }}>
+        <div style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: 10, paddingBottom: 8 }}>
           <p style={{
             fontSize: "0.62rem",
             color: textMuted,
@@ -1109,13 +1109,23 @@ export default function EntropyForge() {
           }}>
             All entropy computed locally via Web Crypto API · No data leaves your device · Math.random() never used
           </p>
-          <p style={{ fontSize: "0.62rem", color: textMuted, letterSpacing: "0.06em" }}>
-            Built by{" "}
-            <a href="https://x.com/dotAadarsh" target="_blank" rel="noopener noreferrer"
-              style={{ color: accent, textDecoration: "none", fontWeight: 600 }}>
-              @dotAadarsh
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 14, flexWrap: "wrap" }}>
+            <p style={{ fontSize: "0.62rem", color: textMuted, letterSpacing: "0.06em" }}>
+              Built by{" "}
+              <a href="https://x.com/dotAadarsh" target="_blank" rel="noopener noreferrer"
+                style={{ color: accent, textDecoration: "none", fontWeight: 600 }}>
+                @dotAadarsh
+              </a>
+            </p>
+            <span style={{ color: border, fontSize: "0.6rem" }}>·</span>
+            <a href="https://buymeachai.ezee.li/dotaadarsh" target="_blank" rel="noopener noreferrer">
+              <img
+                src="https://buymeachai.ezee.li/assets/images/buymeachai-button.png"
+                alt="Buy Me A Chai"
+                style={{ height: 28, width: "auto", display: "block", borderRadius: 6 }}
+              />
             </a>
-          </p>
+          </div>
         </div>
       </main>
     </div>
