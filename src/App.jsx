@@ -556,7 +556,7 @@ export default function EntropyForge() {
         {/* Left — GitHub */}
         <div style={{ display: "flex", alignItems: "center" }}>
           <a
-            href="https://github.com/dotAadarsh"
+            href="https://github.com/dotAadarsh/Not-another-password-generator"
             target="_blank"
             rel="noopener noreferrer"
             style={{
