@@ -1,8 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-
-// ============================================================
-// ENTROPY ENGINE — collects real-world chaos signals
-// ============================================================
+import { Analytics } from "@vercel/analytics/react";
 
 /** Measure round-trip latency to a tiny cachebust URL */
 async function measureNetworkLatency() {
