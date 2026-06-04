@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from '@vercel/speed-insights/react';
+
 
 /** Measure round-trip latency to a tiny cachebust URL */
 async function measureNetworkLatency() {
@@ -1128,6 +1130,8 @@ export default function EntropyForge() {
           </div>
         </div>
       </main>
+      <Analytics />
+      <SpeedInsights />
     </div>
   );
 }
